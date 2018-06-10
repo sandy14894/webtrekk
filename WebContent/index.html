@@ -1,0 +1,159 @@
+﻿<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>WebTrekk</title>
+    <!-- Bootstrap Styles-->
+    <script src="/webTrekk/js/angular.min.js"></script>
+	<script src="/webTrekk/js/angular-route.js"></script>
+	<script src="/webTrekk/js/customer.js"></script>
+    <link href="/webTrekk/css/bootstrap.css" rel="stylesheet" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+</head>
+
+<body data-ng-app="customer" data-ng-controller="customerController" data-ng-cloak>
+
+
+
+
+    <div style="margin:1% 10% 2% 10%;">
+    
+            <div id="page-inner">
+            
+            
+            <div class="table-responsive">          
+  <table class="table">
+    <thead>
+      <tr>
+        <th style="width:10%;">ID</th>
+        <th style="width:40%;">Name</th>
+        <th style="width:20%;">Birthday</th>
+        <th style="width:30%;">Actions</th>
+      </tr>
+    </thead>
+    </table>
+    </div>
+    <div class="table-responsive" style="margin-top:-2%;overflow-y:auto;max-height:60%;">          
+  <table class="table">
+    <tbody>
+      <tr data-ng-repeat = "cust in customerList">
+        <td style="width:10%;">{{cust.id}}</td>
+        <td style="width:40%;" data-ng-click="editCustomer($index)">{{cust.first}} {{cust.last}}</td>
+        <td style="width:20%;">{{cust.birthday.getDate()}}/{{cust.birthday.getMonth()+1}}/{{cust.birthday.getFullYear()}}</td>
+        <td style="width:30%;"><a data-ng-click="editCustomer($index)" style="margin-right:2%;"><i class="fa fa-pencil" style="font-size:24px"></i></a> <a data-ng-show="$last" data-ng-click="addNew();" style="margin-right:2%;"><i class="fa fa-plus-circle" style="font-size:24px"></i></a> <a data-ng-click="deleteConfirm(cust.id)"><i class="fa fa-trash" style="font-size:24px"></i></a></td>
+      </tr>
+      <tr data-ng-show="customerList.length==0">
+      <td>Sorry No Customer added.</td>
+      <td><a data-toggle="modal" data-target="#editModal">Add Customer</a></td>
+      </tr>
+    </tbody>
+  </table>
+  </div>
+            
+            
+			
+    </div>
+    </div>
+    
+    <!--code for the pop up starts here-->
+    
+    <div class="modal fade" id="editModal" role="dialog">
+    <div class="modal-dialog">
+    
+      <!-- Modal content-->
+      <div class="modal-content">
+        <div class="modal-header">
+          <button type="button" class="close" data-dismiss="modal">&times;</button>
+          <h4 class="modal-title">{{viewCust.name.first}} {{viewCust.name.last}}</h4>
+        </div>
+        <div class="modal-body">
+          <div class="row">
+          							<div class="col-md-2 col-sm-8">
+										<div class="form-group">
+                                            <input class="form-control" placeholder="ID" disabled data-ng-model="viewCust.id">
+                                        </div>
+									</div>
+									<div class="col-md-5 col-sm-5">
+										<div class="form-group">
+                                            <input class="form-control" placeholder="First Name" data-ng-model="viewCust.name.first" maxlength="50">
+                                        </div>
+									</div>
+									<div class="col-md-5 col-sm-5">
+										<div class="form-group">
+                                            <input class="form-control" placeholder="Last Name" data-ng-model="viewCust.name.last" maxlength="50">
+                                        </div>
+									</div>
+									<div class="col-md-5 col-sm-4">
+										<div class="form-group">
+											<input type="radio" name="optradio" data-ng-model="viewCust.gender" data-ng-value="1"  style="display:inline-block;width:25%;"><span style="display:inline-block;">Male</span>
+											<input type="radio" name="optradio" data-ng-model="viewCust.gender" data-ng-value="2" style="display:inline-block;width:25%;"><span style="display:inline-block">Female</span>
+										</div>
+									</div>
+									<div class="col-md-5 ">
+										<div class="form-group">
+										    <input type="date" class="form-control" placeholder="Date of Birth" data-ng-model="viewCust.birthday">
+										</div>
+									</div>
+									<div class="col-md-5 col-sm-4" >
+										<div class="form-group">   
+										   <input type="datetime-local" class="form-control" placeholder="Last Contacted On" data-ng-model="viewCust.lastContact">
+										</div>
+									</div>
+									<div class="col-md-5 col-sm-4">
+										<div class="form-group">
+											<input class="form-control" placeholder="Customer Lifetime Value" data-ng-model="viewCust.customerLifetimeValue" onkeypress="return validateDecimal(this ,event)">
+										</div>
+									</div>
+									
+		
+
+            </div>
+        </div>
+        <div class="modal-footer">
+           <a class="btn btn-danger"  data-dismiss="modal" style="float:right;margin-left:1%;">Close</a>
+		   <a class="btn btn-success" data-ng-click="addCustomer();"   style="float:right;margin-left:1%;">Save</a>
+        </div>
+      </div>
+      
+    </div>
+  </div>
+    
+    
+    <!-- code for the pop up ends here -->
+    
+    
+    <!-- code for delete pop up starts here -->
+    
+    <div class="modal fade" id="deleteModal" role="dialog">
+    <div class="modal-dialog">
+    
+      <!-- Modal content-->
+      <div class="modal-content">
+        <div class="modal-header">
+          <button type="button" class="close" data-dismiss="modal">&times;</button>
+          <h4 class="modal-title">Remove Customer</h4>
+        </div>
+        <div class="modal-body">
+          <span>The customer data will be deleted permanently. Click YES to continue.</span>
+        </div>
+        <div class="modal-footer">
+           <a class="btn btn-danger"  data-dismiss="modal" style="float:right;margin-left:1%;">NO</a>
+		   <a class="btn btn-success" data-ng-click="removeCustomer();"   style="float:right;margin-left:1%;">YES</a>
+        </div>
+      </div>
+      
+    </div>
+  </div>
+    
+    <!-- code for delete pop up ends here -->
+    <!-- JS Scripts-->
+    <!-- jQuery Js -->
+    <script src="/webTrekk/js/jquery-1.10.2.js"></script>
+    <!-- Bootstrap Js -->
+    <script src="/webTrekk/js/bootstrap.min.js"></script>
+
+
+</body>
+</html>​
